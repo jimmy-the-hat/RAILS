@@ -4,7 +4,7 @@ class PinsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
-    @pins = Pin.all.order("created_at DESC")
+    @pins = Pin.all.order("created_at DESC").paginate(:page => params[:page], :per_page => 8)
   end
 
   def show
@@ -26,13 +26,11 @@ class PinsController < ApplicationController
     end
   end
 
-  def update
-    respond_to do |format|
-      if @pin.update(pin_params)
-        redirect_to @pin, notice: 'Pin was successfully updated.'
-      else
-        render action: 'edit'
-      end
+   def update
+    if @pin.update(pin_params)
+      redirect_to @pin, notice: 'Pin was successfully updated.'
+    else
+      render action: 'edit'
     end
   end
 
